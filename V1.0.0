@@ -1,0 +1,49 @@
+local Players = game:GetService("Players")
+local roleTags = {
+    Owner = {Color = Color3.fromRGB(101, 122, 255), Text = "Owner"},
+    Dev = {Color = Color3.fromRGB(0, 255, 0), Text = "Dev"},
+    Admin = {Color = Color3.fromRGB(0, 0, 255), Text = "Admin"}
+}
+
+local function createRoleTag(player, roleInfo)
+    local billboardGui = Instance.new("BillboardGui")
+    billboardGui.Adornee = player.Character:WaitForChild("Head")
+    billboardGui.Size = UDim2.new(0, 100, 0, 50)
+    billboardGui.StudsOffset = Vector3.new(0, 2, 0)
+    billboardGui.AlwaysOnTop = true
+
+    local textLabel = Instance.new("TextLabel")
+    textLabel.BackgroundTransparency = 1
+    textLabel.Size = UDim2.new(1, 0, 1, 0)
+    textLabel.Text = roleInfo.Text
+    textLabel.TextColor3 = roleInfo.Color
+    textLabel.Font = Enum.Font.SourceSansBold
+    textLabel.TextScaled = true
+    textLabel.Parent = billboardGui
+
+    billboardGui.Parent = player.Character
+end
+
+local function onCharacterAdded(character)
+    local player = Players:GetPlayerFromCharacter(character)
+    if player then
+        -- Example role assignment, this should be replaced with your own logic to determine a player's role
+        if player.Name == "Player1" then --Your Username
+            createRoleTag(player, roleTags.Owner)
+        elseif player.Name == "Player2" then --Dev's Username
+            createRoleTag(player, roleTags.Dev)
+        elseif player.Name == "Player3" then --Admin's Username
+            createRoleTag(player, roleTags.Admin)
+        end
+    end
+end
+
+local function onPlayerAdded(player)
+    player.CharacterAdded:Connect(onCharacterAdded)
+end
+
+Players.PlayerAdded:Connect(onPlayerAdded)
+
+for _, player in Players:GetPlayers() do
+    player.CharacterAdded:Connect(onCharacterAdded)
+end
